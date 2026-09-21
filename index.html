@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>टाइपरायटर व्हिडिओ जनरेटर | Typewriter Video Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#efe9db;
+    --paper-dark:#e4dcc8;
+    --ink:#1f1c16;
+    --ink-soft:#5c5546;
+    --ribbon:#a13d2b;
+    --ribbon-dark:#7c2e20;
+    --line:#c9bfa4;
+    --key:#f7f3e8;
+    --key-shadow:#b9ac8c;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Mono', monospace;
+  }
+  body{
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(31,28,22,0.05) 1px, transparent 0);
+    background-size:22px 22px;
+    min-height:100vh;
+    padding:32px 20px 60px;
+  }
+  .wrap{max-width:1120px;margin:0 auto;}
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    border-bottom:3px solid var(--ink);
+    padding-bottom:14px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  h1{
+    font-size:22px;
+    letter-spacing:0.5px;
+    margin:0;
+    font-weight:700;
+  }
+  h1 .dot{color:var(--ribbon);}
+  .subtitle{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:28px;
+  }
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr;}
+  }
+  .panel{
+    background:var(--key);
+    border:2px solid var(--ink);
+    box-shadow:5px 5px 0 var(--key-shadow);
+    padding:20px;
+  }
+  .field{margin-bottom:18px;}
+  .field:last-child{margin-bottom:0;}
+  label{
+    display:block;
+    font-size:11px;
+    text-transform:none;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  textarea, select, input[type=text]{
+    width:100%;
+    font-family:'Noto Sans Devanagari','Space Mono',monospace;
+    font-size:15px;
+    padding:10px;
+    border:2px solid var(--ink);
+    background:var(--paper);
+    color:var(--ink);
+    resize:vertical;
+  }
+  textarea{min-height:130px; line-height:1.5;}
+  input[type=range]{width:100%;}
+  .speedrow{display:flex; align-items:center; gap:10px;}
+  .speedrow input[type=range]{flex:1;}
+  .speedrow input[type=number]{
+    width:64px;
+    font-family:'Space Mono',monospace;
+    font-size:14px;
+    padding:6px;
+    border:2px solid var(--ink);
+    background:var(--paper);
+    color:var(--ink);
+    text-align:center;
+  }
+  .presetrow{display:flex; gap:6px; margin-top:8px;}
+  .presetrow .preset{
+    flex:1;
+    font-size:11px;
+    padding:6px 4px;
+    width:auto;
+  }
+  .presetrow .preset.active{
+    background:var(--ribbon);
+    border-color:var(--ribbon-dark);
+    color:var(--paper);
+  }
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .colorfield{display:flex; align-items:center; gap:10px;}
+  input[type=color]{
+    width:44px; height:34px; border:2px solid var(--ink); padding:0; background:none; cursor:pointer;
+  }
+  .rangeval{
+    font-size:12px; color:var(--ink-soft); display:flex; justify-content:space-between;
+  }
+  .checkrow{display:flex; align-items:center; gap:8px;}
+  .checkrow input{width:16px;height:16px;}
+  .checkrow label{margin:0;}
+  button{
+    font-family:'Space Mono',monospace;
+    font-weight:700;
+    font-size:13px;
+    padding:12px 18px;
+    border:2px solid var(--ink);
+    background:var(--paper);
+    color:var(--ink);
+    cursor:pointer;
+    width:100%;
+  }
+  button:active{transform:translate(1px,1px);}
+  button.primary{
+    background:var(--ribbon);
+    border-color:var(--ribbon-dark);
+    color:var(--paper);
+  }
+  button.primary:disabled{
+    background:var(--line);
+    border-color:var(--line);
+    color:var(--ink-soft);
+    cursor:not-allowed;
+  }
+  .btnrow{display:flex; gap:10px; margin-top:6px;}
+  .canvas-frame{
+    background:var(--ink);
+    border:2px solid var(--ink);
+    box-shadow:5px 5px 0 var(--key-shadow);
+    padding:14px;
+  }
+  canvas{
+    display:block;
+    width:100%;
+    height:auto;
+    background:#000;
+  }
+  .status{
+    margin-top:12px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    min-height:18px;
+  }
+  .status.active{color:var(--ribbon-dark); font-weight:700;}
+  .downloadlink{
+    display:none;
+    margin-top:10px;
+    font-size:13px;
+    padding:10px;
+    border:2px dashed var(--ribbon-dark);
+    color:var(--ribbon-dark);
+    text-decoration:none;
+    text-align:center;
+  }
+  .downloadlink.show{display:block;}
+  .hint{font-size:11px; color:var(--ink-soft); margin-top:8px; line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>टाइपरायटर व्हिडिओ जनरेटर<span class="dot">.</span></h1>
+      <p class="subtitle">तुमचा मजकूर टाइप करा — टाइपरायटर इफेक्टचा व्हिडिओ तयार करा आणि डाउनलोड करा</p>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="panel">
+      <div class="field">
+        <label for="text">मजकूर (Marathi / Hindi / English)</label>
+        <textarea id="text">नमस्कार!
+हा टाइपरायटर इफेक्ट व्हिडिओ आहे.
+तुमचा मजकूर इथे टाका आणि व्हिडिओ डाउनलोड करा.</textarea>
+      </div>
+
+      <div class="field row2">
+        <div>
+          <label for="ratio">व्हिडिओ आकार</label>
+          <select id="ratio">
+            <option value="1280x720">लँडस्केप 16:9 (1280×720)</option>
+            <option value="1080x1080">स्क्वेअर 1:1 (1080×1080)</option>
+            <option value="1080x1920">रील्स / स्टोरी 9:16 (1080×1920)</option>
+          </select>
+        </div>
+        <div>
+          <label for="align">मजकूर संरेखन</label>
+          <select id="align">
+            <option value="left">डावीकडे</option>
+            <option value="center">मध्यभागी</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fontsize">फॉन्ट साइझ: <span id="fontsizeval">48</span>px</label>
+        <input type="range" id="fontsize" min="20" max="90" value="48">
+      </div>
+
+      <div class="field">
+        <label for="speed">टायपिंग वेग (अक्षरे/सेकंद)</label>
+        <div class="speedrow">
+          <input type="range" id="speed" min="1" max="60" value="14">
+          <input type="number" id="speedNum" min="1" max="60" value="14">
+        </div>
+        <div class="presetrow">
+          <button type="button" class="preset" data-cps="5">मंद</button>
+          <button type="button" class="preset" data-cps="14">सामान्य</button>
+          <button type="button" class="preset" data-cps="25">जलद</button>
+          <button type="button" class="preset" data-cps="45">खूप जलद</button>
+        </div>
+        <div class="rangeval"><span id="durationEstimate">अंदाजे लांबी: —</span></div>
+      </div>
+
+      <div class="field row2">
+        <div class="colorfield">
+          <input type="color" id="textcolor" value="#f5f0e1">
+          <label style="margin:0;">मजकूर रंग</label>
+        </div>
+        <div class="colorfield">
+          <input type="color" id="bgcolor" value="#141414">
+          <label style="margin:0;">बॅकग्राउंड</label>
+        </div>
+      </div>
+
+      <div class="field checkrow">
+        <input type="checkbox" id="cursor" checked>
+        <label for="cursor">कर्सर दाखवा (टाइप होताना ब्लिंक)</label>
+      </div>
+
+      <div class="field">
+        <label for="endpause">शेवटी थांबा: <span id="endpauseval">1.5</span> सेकंद</label>
+        <input type="range" id="endpause" min="0" max="5" step="0.5" value="1.5">
+      </div>
+
+      <div class="btnrow">
+        <button id="previewBtn">▶ प्रिव्ह्यू चालवा</button>
+        <button id="recordBtn" class="primary">⏺ रेकॉर्ड आणि डाउनलोड</button>
+      </div>
+      <div class="status" id="status"></div>
+      <a id="downloadLink" class="downloadlink" download="typewriter-video.webm">⬇ व्हिडिओ डाउनलोड करा (.webm)</a>
+      <p class="hint">रेकॉर्डिंग तुमच्या ब्राउझरमध्येच होते (कोणताही सर्व्हर वापरला जात नाही). फाइल .webm स्वरूपात मिळेल — ती बहुतेक व्हिडिओ एडिटर आणि सोशल मीडियावर चालते. Chrome किंवा Edge वापरण्याची शिफारस आहे.</p>
+    </div>
+
+    <div>
+      <div class="canvas-frame">
+        <canvas id="canvas" width="1280" height="720"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d', { alpha:false });
+
+const els = {
+  text: document.getElementById('text'),
+  ratio: document.getElementById('ratio'),
+  align: document.getElementById('align'),
+  fontsize: document.getElementById('fontsize'),
+  fontsizeval: document.getElementById('fontsizeval'),
+  speed: document.getElementById('speed'),
+  speedNum: document.getElementById('speedNum'),
+  presets: document.querySelectorAll('.preset'),
+  durationEstimate: document.getElementById('durationEstimate'),
+  textcolor: document.getElementById('textcolor'),
+  bgcolor: document.getElementById('bgcolor'),
+  cursor: document.getElementById('cursor'),
+  endpause: document.getElementById('endpause'),
+  endpauseval: document.getElementById('endpauseval'),
+  previewBtn: document.getElementById('previewBtn'),
+  recordBtn: document.getElementById('recordBtn'),
+  status: document.getElementById('status'),
+  downloadLink: document.getElementById('downloadLink'),
+};
+
+let fontReady = false;
+document.fonts.load('48px "Noto Sans Devanagari"').then(()=>{
+  fontReady = true;
+  draw(getFullPlan(), getFullPlan().totalChars);
+});
+
+function applyRatio(){
+  const [w,h] = els.ratio.value.split('x').map(Number);
+  canvas.width = w;
+  canvas.height = h;
+}
+els.ratio.addEventListener('change', ()=>{ applyRatio(); draw(getFullPlan(), currentVisible); });
+applyRatio();
+
+els.fontsize.addEventListener('input', ()=>{
+  els.fontsizeval.textContent = els.fontsize.value;
+  draw(getFullPlan(), currentVisible);
+});
+function setSpeed(val){
+  val = Math.max(1, Math.min(60, Math.round(val)));
+  els.speed.value = val;
+  els.speedNum.value = val;
+  els.presets.forEach(b=> b.classList.toggle('active', Number(b.dataset.cps)===val));
+  updateDurationEstimate();
+}
+els.speed.addEventListener('input', ()=> setSpeed(els.speed.value));
+els.speedNum.addEventListener('input', ()=>{
+  if(els.speedNum.value !== '') setSpeed(els.speedNum.value);
+});
+els.presets.forEach(btn=>{
+  btn.addEventListener('click', ()=> setSpeed(btn.dataset.cps));
+});
+function updateDurationEstimate(){
+  const plan = getFullPlan();
+  const cps = parseFloat(els.speed.value) || 1;
+  const endPause = parseFloat(els.endpause.value)||0;
+  const seconds = (plan.totalChars / cps) + endPause;
+  els.durationEstimate.textContent = `अंदाजे लांबी: ${seconds.toFixed(1)} सेकंद`;
+}
+els.endpause.addEventListener('input', ()=>{ els.endpauseval.textContent = els.endpause.value; updateDurationEstimate(); });
+[els.text, els.align, els.textcolor, els.bgcolor, els.cursor].forEach(el=>{
+  el.addEventListener('input', ()=> { draw(getFullPlan(), currentVisible); updateDurationEstimate(); });
+});
+setSpeed(els.speed.value);
+
+// Wrap the raw text (respecting user newlines) into drawable lines for the current canvas width/font.
+function wrapPlan(){
+  const fontSize = parseInt(els.fontsize.value,10);
+  const font = `600 ${fontSize}px "Noto Sans Devanagari", "Space Mono", sans-serif`;
+  ctx.font = font;
+  const marginX = canvas.width * 0.08;
+  const maxWidth = canvas.width - marginX*2;
+  const rawLines = els.text.value.split('\n');
+  const lines = [];
+  rawLines.forEach(raw=>{
+    if(raw.trim()===''){ lines.push(''); return; }
+    const words = raw.split(' ');
+    let cur = '';
+    words.forEach(word=>{
+      const test = cur ? cur + ' ' + word : word;
+      if(ctx.measureText(test).width > maxWidth && cur){
+        lines.push(cur);
+        cur = word;
+      } else {
+        cur = test;
+      }
+    });
+    lines.push(cur);
+  });
+  return { lines, font, fontSize, marginX };
+}
+
+// Build a flat list of characters (with line breaks marked) so we can reveal char-by-char across wrapped lines.
+function getFullPlan(){
+  const { lines, font, fontSize, marginX } = wrapPlan();
+  const chars = [];
+  lines.forEach((line, li)=>{
+    for(const ch of line){ chars.push({ch, line: li}); }
+    if(li < lines.length-1) chars.push({ch:'\n', line: li});
+  });
+  return { lines, font, fontSize, marginX, chars, totalChars: chars.length };
+}
+
+let currentVisible = 0;
+
+function draw(plan, visibleCount){
+  currentVisible = visibleCount;
+  const { lines, font, fontSize, marginX } = plan;
+  ctx.fillStyle = els.bgcolor.value;
+  ctx.fillRect(0,0,canvas.width, canvas.height);
+  ctx.font = font;
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = els.textcolor.value;
+  const lineHeight = fontSize * 1.55;
+  const totalTextHeight = lines.length * lineHeight;
+  let startY = (canvas.height - totalTextHeight)/2 + fontSize;
+  if(startY < fontSize + 20) startY = fontSize + 20;
+
+  // figure out, per visible char count, how much of each line is shown
+  const shownPerLine = {};
+  let count = 0;
+  for(const c of plan.chars){
+    if(count >= visibleCount) break;
+    if(c.ch !== '\n'){
+      shownPerLine[c.line] = (shownPerLine[c.line]||'') + c.ch;
+    }
+    count++;
+  }
+
+  let cursorX = null, cursorY = null;
+  lines.forEach((fullLine, li)=>{
+    const shown = shownPerLine[li] || '';
+    const y = startY + li*lineHeight;
+    let x = marginX;
+    if(els.align.value === 'center'){
+      const w = ctx.measureText(shown).width;
+      x = (canvas.width - w)/2;
+    }
+    if(shown.length>0){
+      ctx.fillText(shown, x, y);
+    }
+    if(count === visibleCount || (shown.length===fullLine.length && li===findLastActiveLine(shownPerLine, lines))){
+      // track potential cursor position at the last written line
+    }
+    if(li === activeLineFor(visibleCount, plan)){
+      cursorX = x + ctx.measureText(shown).width;
+      cursorY = y;
+    }
+  });
+
+  if(els.cursor.checked && cursorX!==null && visibleCount < plan.totalChars){
+    const blink = Math.floor(Date.now()/400)%2===0;
+    if(blink){
+      ctx.fillRect(cursorX+4, cursorY - fontSize*0.85, fontSize*0.5, fontSize*1.0);
+    }
+  } else if(els.cursor.checked && cursorX!==null && visibleCount>=plan.totalChars){
+    const blink = Math.floor(Date.now()/500)%2===0;
+    if(blink) ctx.fillRect(cursorX+4, cursorY - fontSize*0.85, fontSize*0.5, fontSize*1.0);
+  }
+}
+
+function activeLineFor(visibleCount, plan){
+  let count = 0, line = 0;
+  for(const c of plan.chars){
+    if(count >= visibleCount) break;
+    line = c.line;
+    count++;
+  }
+  return line;
+}
+function findLastActiveLine(){ return -1; }
+
+draw(getFullPlan(), 0);
+
+// ---- Animation / recording ----
+let animHandle = null;
+
+function runAnimation({onFrame, onDone}){
+  const plan = getFullPlan();
+  const cps = parseFloat(els.speed.value);
+  const endPause = parseFloat(els.endpause.value) * 1000;
+  const totalChars = plan.totalChars;
+  const durationMs = (totalChars / cps) * 1000;
+  const startTime = performance.now();
+
+  function frame(now){
+    const elapsed = now - startTime;
+    let visible;
+    if(elapsed <= durationMs){
+      visible = Math.min(totalChars, Math.floor((elapsed/1000)*cps));
+      draw(plan, visible);
+      onFrame && onFrame(elapsed, durationMs+endPause);
+      animHandle = requestAnimationFrame(frame);
+    } else if(elapsed <= durationMs + endPause){
+      draw(plan, totalChars);
+      onFrame && onFrame(elapsed, durationMs+endPause);
+      animHandle = requestAnimationFrame(frame);
+    } else {
+      draw(plan, totalChars);
+      onDone && onDone();
+    }
+  }
+  animHandle = requestAnimationFrame(frame);
+}
+
+els.previewBtn.addEventListener('click', ()=>{
+  if(animHandle) cancelAnimationFrame(animHandle);
+  els.status.textContent = 'प्रिव्ह्यू चालू आहे...';
+  els.status.classList.add('active');
+  runAnimation({
+    onDone: ()=>{
+      els.status.textContent = 'प्रिव्ह्यू पूर्ण.';
+      els.status.classList.remove('active');
+    }
+  });
+});
+
+els.recordBtn.addEventListener('click', ()=>{
+  if(animHandle) cancelAnimationFrame(animHandle);
+  if(!window.MediaRecorder){
+    els.status.textContent = 'या ब्राउझरमध्ये रेकॉर्डिंग सपोर्ट नाही. कृपया Chrome किंवा Edge वापरा.';
+    return;
+  }
+  els.recordBtn.disabled = true;
+  els.downloadLink.classList.remove('show');
+  els.status.classList.add('active');
+  els.status.textContent = 'रेकॉर्डिंग सुरू...';
+
+  const stream = canvas.captureStream(30);
+  let mimeType = 'video/webm;codecs=vp9';
+  if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8';
+  if(!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 6_000_000 });
+  const chunks = [];
+  recorder.ondataavailable = e=>{ if(e.data.size>0) chunks.push(e.data); };
+  recorder.onstop = ()=>{
+    const blob = new Blob(chunks, { type:'video/webm' });
+    const url = URL.createObjectURL(blob);
+    els.downloadLink.href = url;
+    els.downloadLink.classList.add('show');
+    els.status.textContent = 'रेकॉर्डिंग पूर्ण! खालील लिंकवरून व्हिडिओ डाउनलोड करा.';
+    els.status.classList.remove('active');
+    els.recordBtn.disabled = false;
+  };
+
+  recorder.start();
+  runAnimation({
+    onFrame: (elapsed, total)=>{
+      const pct = Math.min(100, Math.round((elapsed/total)*100));
+      els.status.textContent = `रेकॉर्डिंग सुरू... ${pct}%`;
+    },
+    onDone: ()=>{
+      setTimeout(()=> recorder.stop(), 150);
+    }
+  });
+});
+</script>
+</body>
+</html>
