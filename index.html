@@ -283,9 +283,9 @@
   <div class="langcard">
     <h2>भाषा निवडा / भाषा चुनें / Choose your language</h2>
     <div class="sub">पुढे जाण्यासाठी भाषा निवडा — आगे बढ़ने के लिए भाषा चुनें — select a language to continue</div>
-    <button type="button" class="langbtn" data-lang="mr">मराठी</button>
-    <button type="button" class="langbtn" data-lang="hi">हिंदी</button>
-    <button type="button" class="langbtn" data-lang="en">English</button>
+<button type="button" class="langbtn" data-lang="mr" onclick="document.getElementById('langOverlay').style.display='none'; if(typeof applyLanguage==='function') applyLanguage('mr');">मराठी</button>
+<button type="button" class="langbtn" data-lang="hi" onclick="document.getElementById('langOverlay').style.display='none'; if(typeof applyLanguage==='function') applyLanguage('hi');">हिंदी</button>
+<button type="button" class="langbtn" data-lang="en" onclick="document.getElementById('langOverlay').style.display='none'; if(typeof applyLanguage==='function') applyLanguage('en');">English</button>
   </div>
 </div>
 
